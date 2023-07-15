@@ -44,22 +44,32 @@ const Users = () => {
   const getDataFromSocket = () => {
     connectSocket();
     if (socket) {
+      // Login user
       socket?.on('user-login', (res) => {
-        if (res?.action === 'login') {
-          const data = { ...res?.google, action: res?.action, description: res?.description };
-          const getData = localStorage.getItem('users');
-          let localUsers = [];
-          if (getData) {
-            const allUsers = JSON.parse(getData);
-            localUsers = allUsers;
-          }
-          console.log('GET data ', getData);
-          console.log('LocalUsere => ', localUsers);
-          localUsers.push(data);
-          console.log('Updated data ', localUsers);
-          localStorage.setItem('users', JSON.stringify(localUsers));
-          setUsers([...users, data]);
+        const data = { ...res?.google, action: 'login', description: res?.description };
+        const getData = localStorage.getItem('users');
+        let localUsers = [];
+        if (getData) {
+          const allUsers = JSON.parse(getData);
+          localUsers = allUsers;
         }
+        localUsers.push(data);
+        localStorage.setItem('users', JSON.stringify(localUsers));
+        setUsers([...users, data]);
+      });
+
+      // New Post
+      socket?.on('newPost', (res) => {
+        const data = { ...res, action: 'newPost', description: res?.description ?? 'New post' };
+        const getData = localStorage.getItem('users');
+        let localUsers = [];
+        if (getData) {
+          const allUsers = JSON.parse(getData);
+          localUsers = allUsers;
+        }
+        localUsers.push(data);
+        localStorage.setItem('users', JSON.stringify(localUsers));
+        setUsers([...users, data]);
       });
     }
   };
