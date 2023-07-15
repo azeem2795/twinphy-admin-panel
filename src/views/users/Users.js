@@ -71,6 +71,42 @@ const Users = () => {
         localStorage.setItem('users', JSON.stringify(localUsers));
         setUsers([...users, data]);
       });
+
+      // New Comment
+      socket?.on('newComment', (res) => {
+        const data = {
+          ...res,
+          action: 'newComment',
+          description: res?.description ?? 'New comment',
+        };
+        const getData = localStorage.getItem('users');
+        let localUsers = [];
+        if (getData) {
+          const allUsers = JSON.parse(getData);
+          localUsers = allUsers;
+        }
+        localUsers.push(data);
+        localStorage.setItem('users', JSON.stringify(localUsers));
+        setUsers([...users, data]);
+      });
+
+      // Like Post
+      socket?.on('postUpdate', (res) => {
+        const data = {
+          ...res,
+          action: 'postUpdate',
+          description: res?.description ?? 'Like post',
+        };
+        const getData = localStorage.getItem('users');
+        let localUsers = [];
+        if (getData) {
+          const allUsers = JSON.parse(getData);
+          localUsers = allUsers;
+        }
+        localUsers.push(data);
+        localStorage.setItem('users', JSON.stringify(localUsers));
+        setUsers([...users, data]);
+      });
     }
   };
 
